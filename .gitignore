@@ -18,3 +18,10 @@ Thumbs.db
 
 # Submitted document - kept out of the public repository
 report/
+
+# build and pip debugging debris
+_shots/
+_wheels/
+pytest-of-*/
+pip-*.log
+
