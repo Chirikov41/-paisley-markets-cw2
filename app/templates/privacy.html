@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Privacy notice - {{ market.name }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Privacy notice</p>
+    <h1>How we handle trader applications</h1>
+    <p class="lede">This notice explains what the market office collects when a trader applies for a pitch, why it is needed and how long it is kept.</p>
+  </div>
+</section>
+
+<section class="section wrap prose">
+  <h2>Who is responsible for the data</h2>
+  <p>The market office acts as data controller for the application form. Contact the office at
+     <a href="mailto:{{ market.contact_email }}">{{ market.contact_email }}</a> for any question about this notice.</p>
+
+  <h2>What we collect</h2>
+  <ul class="list">
+    <li>Business name and the name of the person applying.</li>
+    <li>A contact email address and, optionally, a telephone number.</li>
+    <li>The category of goods, a description of what you sell and the weekends you want to trade.</li>
+    <li>The pitch type and whether you need an electrical supply.</li>
+    <li>The date and time you gave consent, kept as evidence that consent was given.</li>
+  </ul>
+  <p>We do not ask for date of birth, identity documents, bank details or any special category data.</p>
+
+  <h2>Why we need it, and our lawful basis</h2>
+  <p>We use the data to assess the application, to allocate pitches by category and to contact you about the
+     offer, the licence pack and the pitch fee. The lawful basis is <strong>consent</strong>, which you give by ticking
+     the declaration on the form. You can withdraw consent at any time; we will then stop processing the
+     application and delete it unless we are required to keep it for legal reasons.</p>
+
+  <h2>How long we keep it</h2>
+  <p>Applications are kept for 12 months after the market closes, so that we can answer queries about
+     pitch allocation and repeat traders. After that the record is deleted. Rejected applications are kept for
+     12 months as well, because traders often ask why a category was full.</p>
+
+  <h2>Who else sees it</h2>
+  <p>Only the market office staff who review applications can see the full record. A trading officer may see
+     the business name and category for pitch planning. We do not sell data and we do not use it for
+     marketing. The site is hosted on a platform that stores the database, and the hosting provider processes
+     the data on our instructions.</p>
+
+  <h2>Your rights</h2>
+  <ul class="list">
+    <li><strong>Access:</strong> the status page shows the record we hold for your reference and email address.</li>
+    <li><strong>Rectification:</strong> ask the office to correct a mistake and it is amended on the same record.</li>
+    <li><strong>Erasure:</strong> the office can delete an application permanently, and the deletion is written to an audit log.</li>
+    <li><strong>Portability:</strong> the office can export your application as a CSV file on request.</li>
+    <li><strong>Complaint:</strong> you can complain to the Information Commissioner's Office if you are unhappy with our response.</li>
+  </ul>
+
+  <h2>How the data is protected</h2>
+  <p>The application form is served over HTTPS in deployment, sessions are signed with a server side secret,
+     every form post carries a cross site request forgery token, and office passwords are stored as salted
+     PBKDF2-SHA256 hashes rather than plain text. Administrative actions are written to an audit log with the
+     time, the actor and the record affected.</p>
+
+  <h2>Cookies and tracking</h2>
+  <p>The public pages set one session cookie, which holds the security token used by forms. No analytics,
+     advertising or third party tracking scripts are loaded.</p>
+</section>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Traders - {{ market.name }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">The village</p>
+    <h1>Traders at the {{ market.year }} market</h1>
+    <p class="lede">{{ traders|length }} of {{ total }} stalls shown{% if active_category or active_day %} for the filters below{% endif %}.</p>
+  </div>
+</section>
+
+<section class="section wrap">
+  <form class="filters" method="get" action="/traders">
+    <div class="filter-group">
+      <span class="filter-label">Category</span>
+      <a class="chip {% if not active_category %}is-active{% endif %}" href="/traders{% if active_day %}?day={{ active_day }}{% endif %}">All</a>
+      {% for category in categories %}
+      <a class="chip {% if active_category == category.slug %}is-active{% endif %}"
+         href="/traders?category={{ category.slug }}{% if active_day %}&day={{ active_day }}{% endif %}">{{ category.name }}</a>
+      {% endfor %}
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Trading</span>
+      <a class="chip {% if not active_day %}is-active{% endif %}" href="/traders{% if active_category %}?category={{ active_category }}{% endif %}">Both</a>
+      <a class="chip {% if active_day == 'weekend-1' %}is-active{% endif %}"
+         href="/traders?day=weekend-1{% if active_category %}&category={{ active_category }}{% endif %}">Weekend one</a>
+      <a class="chip {% if active_day == 'weekend-2' %}is-active{% endif %}"
+         href="/traders?day=weekend-2{% if active_category %}&category={{ active_category }}{% endif %}">Weekend two</a>
+    </div>
+  </form>
+
+  {% if traders %}
+  <div class="card-grid card-grid--three">
+    {% for trader in traders %}
+    <article class="trader-card">
+      <p class="badge">{{ trader.category_name }}</p>
+      <h2>{{ trader.name }}</h2>
+      <p>{{ trader.description }}</p>
+      <p class="trader-meta">{{ trader.pitch }} &middot; {% if trader.trading_days == 'both' %}both weekends{% else %}{{ day_labels.get(trader.trading_days, trader.trading_days) }}{% endif %}</p>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">
+    <h2>No stalls match those filters</h2>
+    <p>Try a different category or weekend. New traders are added as applications are approved.</p>
+    <a class="button button--primary" href="/traders">Clear filters</a>
+  </div>
+  {% endif %}
+</section>
+
+<section class="band">
+  <div class="wrap band-inner">
+    <div>
+      <h2>Want a pitch here?</h2>
+      <p>Applications for {{ market.year }} close on 30 October. Food traders should have a current food hygiene certificate.</p>
+    </div>
+    <a class="button button--light" href="/apply">Apply for a pitch</a>
+  </div>
+</section>
+{% endblock %}

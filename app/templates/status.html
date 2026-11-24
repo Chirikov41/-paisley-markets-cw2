@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Check application status - {{ market.name }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Trader applications</p>
+    <h1>Check an application</h1>
+    <p class="lede">Enter the reference from your confirmation and the email address used on the form.</p>
+  </div>
+</section>
+
+<section class="section wrap split">
+  <div>
+    {% if errors %}
+    <div class="alert alert--error" role="alert">
+      <h2>We could not find that application</h2>
+      <ul>
+        {% for field, message in errors.items() %}<li>{{ message }}</li>{% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <form class="form form--compact" method="post" action="/status" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <div class="field {% if errors.get('reference') %}field--error{% endif %}">
+        <label for="reference">Reference</label>
+        <input id="reference" name="reference" type="text" value="{{ values.get('reference', '') }}"
+               placeholder="PCM-2026-0001" autocomplete="off" required>
+      </div>
+      <div class="field {% if errors.get('email') %}field--error{% endif %}">
+        <label for="email">Email address</label>
+        <input id="email" name="email" type="email" value="{{ values.get('email', '') }}" autocomplete="email" required>
+      </div>
+      <div class="form-actions">
+        <button class="button button--primary" type="submit">Check status</button>
+      </div>
+    </form>
+
+    {% if application %}
+    <div class="result" aria-live="polite">
+      <div class="result-head">
+        <h2>{{ application.business_name }}</h2>
+        <span class="status status--{{ application.status }}">{{ status_labels.get(application.status, application.status) }}</span>
+      </div>
+      <dl class="detail-list">
+        <div><dt>Reference</dt><dd>{{ application.reference }}</dd></div>
+        <div><dt>Submitted</dt><dd>{{ submitted_on }}</dd></div>
+        <div><dt>Category</dt><dd>{{ application.category_name }}</dd></div>
+        <div><dt>Weekends</dt><dd>{% for day in application.preferred_days.split(',') %}{{ day_labels.get(day, day) }}{% if not loop.last %}, {% endif %}{% endfor %}</dd></div>
+        <div><dt>Pitch</dt><dd>{{ application.stall_type|capitalize }}{% if application.power_required %} with power{% endif %}</dd></div>
+        {% if application.reviewer_note %}
+        <div><dt>Note from the office</dt><dd>{{ application.reviewer_note }}</dd></div>
+        {% endif %}
+      </dl>
+      <p class="muted">Need to change something or ask for the record to be deleted? Email
+        <a href="mailto:{{ market.contact_email }}">{{ market.contact_email }}</a> quoting the reference.</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <aside class="aside-card">
+    <h2>Status meanings</h2>
+    <dl class="detail-list">
+      <div><dt>Submitted</dt><dd>The form has reached the office.</dd></div>
+      <div><dt>Under review</dt><dd>An officer is checking paperwork and pitch availability.</dd></div>
+      <div><dt>Approved</dt><dd>A pitch has been offered. Watch for the licence pack.</dd></div>
+      <div><dt>Not accepted</dt><dd>The category is full or the stall does not fit this year.</dd></div>
+    </dl>
+  </aside>
+</section>
+{% endblock %}

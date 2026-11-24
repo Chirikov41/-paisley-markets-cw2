@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}{{ application.reference }} - Market office{% endblock %}
+
+{% block content %}
+<section class="admin-head">
+  <div class="wrap admin-head-inner">
+    <div>
+      <p class="eyebrow"><a href="/admin">Applications</a> / {{ application.reference }}</p>
+      <h1>{{ application.business_name }}</h1>
+      <p class="muted">
+        <span class="status status--{{ application.status }}">{{ status_labels.get(application.status, application.status) }}</span>
+        &middot; submitted {{ application.created_at[:10] }}
+        &middot; last updated {{ application.updated_at[:10] }}
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap admin-detail">
+  <div class="admin-main">
+    <div class="panel">
+      <h2>Application</h2>
+      <dl class="detail-list detail-list--wide">
+        <div><dt>Contact</dt><dd>{{ application.contact_name }}</dd></div>
+        <div><dt>Email</dt><dd><a href="mailto:{{ application.email }}">{{ application.email }}</a></dd></div>
+        <div><dt>Telephone</dt><dd>{{ application.phone or 'Not provided' }}</dd></div>
+        <div><dt>Category</dt><dd>{{ application.category_name }}</dd></div>
+        <div><dt>Weekends</dt><dd>{% for day in application.preferred_days.split(',') %}{{ day_labels.get(day, day) }}{% if not loop.last %}, {% endif %}{% endfor %}</dd></div>
+        <div><dt>Pitch type</dt><dd>{{ application.stall_type|capitalize }}</dd></div>
+        <div><dt>Power</dt><dd>{{ '13A socket requested' if application.power_required else 'None requested' }}</dd></div>
+        <div><dt>Consent</dt><dd>{{ application.consent_at[:16].replace('T', ' ') if application.consent_at else 'Not recorded' }}</dd></div>
+      </dl>
+      <h3>What they sell</h3>
+      <p class="prose-block">{{ application.product_summary }}</p>
+      {% if application.reviewer_note %}
+      <h3>Current note</h3>
+      <p class="prose-block">{{ application.reviewer_note }}</p>
+      {% endif %}
+    </div>
+
+    <div class="panel">
+      <h2>Decision</h2>
+      <form class="form" method="post" action="/admin/applications/{{ application.id }}/decision">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <div class="field">
+          <label for="note">Note to the trader (required when rejecting)</label>
+          <textarea id="note" name="note" rows="4" maxlength="500">{{ application.reviewer_note or '' }}</textarea>
+          <p class="field-hint">The note is shown on the trader status page.</p>
+        </div>
+        <div class="form-actions">
+          <button class="button button--primary" name="decision" value="approved" type="submit">Approve</button>
+          <button class="button button--ghost" name="decision" value="under_review" type="submit">Mark under review</button>
+          <button class="button button--danger" name="decision" value="rejected" type="submit">Reject</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="panel panel--muted">
+      <h2>History</h2>
+      {% if history %}
+      <ul class="timeline">
+        {% for event in history %}
+        <li>
+          <span class="mono small">{{ event.created_at[:16].replace('T', ' ') }}</span>
+          <strong>{{ event.action }}</strong>
+          <span class="muted">{{ event.detail }}</span>
+          <span class="muted small">by {{ event.actor }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="muted">No events recorded for this application yet.</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <aside class="admin-side">
+    <div class="panel panel--danger">
+      <h2>Erasure request</h2>
+      <p class="small">Permanently deletes the application and the personal data on it. The audit log keeps a record that the deletion happened.</p>
+      <form method="post" action="/admin/applications/{{ application.id }}/delete" class="form form--compact">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <div class="field">
+          <label for="confirm">Type DELETE to confirm</label>
+          <input id="confirm" name="confirm" type="text" autocomplete="off" placeholder="DELETE">
+        </div>
+        <button class="button button--danger" type="submit">Erase application</button>
+      </form>
+    </div>
+  </aside>
+</section>
+{% endblock %}

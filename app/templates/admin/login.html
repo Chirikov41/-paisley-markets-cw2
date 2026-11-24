@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Market office sign in - {{ market.name }}{% endblock %}
+
+{% block content %}
+<section class="section wrap narrow">
+  <div class="panel">
+    <h1>Market office</h1>
+    <p class="muted">Sign in to review trader applications. Staff accounts only.</p>
+    <form class="form form--compact" method="post" action="/admin/login">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <div class="field">
+        <label for="username">Username</label>
+        <input id="username" name="username" type="text" autocomplete="username" required autofocus>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <div class="form-actions">
+        <button class="button button--primary" type="submit">Sign in</button>
+      </div>
+    </form>
+    <p class="muted small">Failed attempts are recorded in the audit log. Demo credentials are in the project README.</p>
+  </div>
+</section>
+{% endblock %}

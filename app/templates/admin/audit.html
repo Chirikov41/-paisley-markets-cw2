@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Audit log - Market office{% endblock %}
+
+{% block content %}
+<section class="admin-head">
+  <div class="wrap admin-head-inner">
+    <div>
+      <p class="eyebrow"><a href="/admin">Applications</a> / Audit log</p>
+      <h1>Audit log</h1>
+      <p class="muted">The last 100 security and business events, newest first.</p>
+    </div>
+    <div class="admin-actions">
+      <a class="button button--ghost" href="/admin">Back to applications</a>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap">
+  <div class="table-wrap">
+    <table class="table table--admin">
+      <thead>
+        <tr>
+          <th scope="col">When</th>
+          <th scope="col">Actor</th>
+          <th scope="col">Action</th>
+          <th scope="col">Record</th>
+          <th scope="col">Detail</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for event in events %}
+        <tr>
+          <td class="mono small">{{ event.created_at[:19].replace('T', ' ') }}</td>
+          <td class="small">{{ event.actor }}</td>
+          <td><span class="tag">{{ event.action }}</span></td>
+          <td class="small">{{ event.entity }}{% if event.entity_id %} #{{ event.entity_id }}{% endif %}</td>
+          <td class="small muted">{{ event.detail or '' }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="muted">No events recorded yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

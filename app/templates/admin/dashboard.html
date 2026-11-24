@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Applications - Market office{% endblock %}
+
+{% block content %}
+<section class="admin-head">
+  <div class="wrap admin-head-inner">
+    <div>
+      <p class="eyebrow">Market office</p>
+      <h1>Trader applications</h1>
+      <p class="muted">Signed in as {{ admin.username }} &middot; {{ total }} applications on file &middot; {{ pending }} awaiting a decision</p>
+    </div>
+    <div class="admin-actions">
+      <a class="button button--ghost" href="/admin/export.csv">Export CSV</a>
+      <a class="button button--ghost" href="/admin/audit">Audit log</a>
+      <form method="post" action="/admin/logout" class="inline-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button class="button button--ghost" type="submit">Sign out</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section class="section wrap">
+  <div class="admin-toolbar">
+    <nav class="tabs" aria-label="Filter by status">
+      {% for slug, label in status_filters %}
+      <a class="tab {% if active_status == slug %}is-active{% endif %}"
+         href="/admin?status={{ slug }}{% if query %}&q={{ query }}{% endif %}">{{ label }}{% if slug != 'all' and counts.get(slug) %} <span class="tab-count">{{ counts.get(slug) }}</span>{% endif %}</a>
+      {% endfor %}
+    </nav>
+    <form class="inline-search" method="get" action="/admin">
+      <input type="hidden" name="status" value="{{ active_status }}">
+      <label class="sr-only" for="q">Search applications</label>
+      <input id="q" name="q" type="search" value="{{ query }}" placeholder="Search business or reference">
+      <button class="button button--primary" type="submit">Search</button>
+    </form>
+  </div>
+
+  {% if applications %}
+  <div class="table-wrap">
+    <table class="table table--admin">
+      <thead>
+        <tr>
+          <th scope="col">Reference</th>
+          <th scope="col">Business</th>
+          <th scope="col">Category</th>
+          <th scope="col">Weekends</th>
+          <th scope="col">Submitted</th>
+          <th scope="col">Status</th>
+          <th scope="col"><span class="sr-only">Open</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for application in applications %}
+        <tr>
+          <td class="mono">{{ application.reference }}</td>
+          <td>
+            <strong>{{ application.business_name }}</strong><br>
+            <span class="muted small">{{ application.contact_name }}</span>
+          </td>
+          <td>{{ application.category_name }}</td>
+          <td>
+            {% for day in application.preferred_days.split(',') %}
+            <span class="tag">{{ day_labels.get(day, day) }}</span>
+            {% endfor %}
+          </td>
+          <td class="mono small">{{ application.created_at[:10] }}</td>
+          <td><span class="status status--{{ application.status }}">{{ status_labels.get(application.status, application.status) }}</span></td>
+          <td><a class="button button--small" href="/admin/applications/{{ application.id }}">Open</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty">
+    <h2>No applications match</h2>
+    <p>Clear the search or choose another status filter.</p>
+    <a class="button button--primary" href="/admin">Clear filters</a>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

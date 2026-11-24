@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}Apply for a pitch - {{ market.name }}{% endblock %}
+{% set days = values.get('preferred_days', []) %}
+{% set selected_stall = values.get('stall_type', 'standard') %}
+
+{% block content %}
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Trader applications</p>
+    <h1>Apply for a pitch at the {{ market.year }} market</h1>
+    <p class="lede">Takes about five minutes. You will get a reference number immediately and a decision within ten working days.</p>
+  </div>
+</section>
+
+<section class="section wrap form-layout">
+  <div>
+    {% if errors %}
+    <div class="alert alert--error" role="alert" tabindex="-1" id="error-summary">
+      <h2>{% if errors|length == 1 %}There is one thing to fix{% else %}There are {{ errors|length }} things to fix{% endif %}</h2>
+      <ul>
+        {% for field, message in errors.items() %}
+        <li><a href="#{{ field }}">{{ message }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <form class="form" method="post" action="/apply" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+      <fieldset>
+        <legend>Your business</legend>
+        <div class="field-row">
+          <div class="field {% if errors.get('business_name') %}field--error{% endif %}">
+            <label for="business_name">Business or stall name</label>
+            <input id="business_name" name="business_name" type="text" maxlength="80"
+                   value="{{ values.get('business_name', '') }}" autocomplete="organization"
+                   {% if errors.get('business_name') %}aria-invalid="true" aria-describedby="business_name-error"{% endif %} required>
+            {% if errors.get('business_name') %}<p class="field-error" id="business_name-error">{{ errors.get('business_name') }}</p>{% endif %}
+          </div>
+          <div class="field {% if errors.get('contact_name') %}field--error{% endif %}">
+            <label for="contact_name">Name of the person applying</label>
+            <input id="contact_name" name="contact_name" type="text" maxlength="80"
+                   value="{{ values.get('contact_name', '') }}" autocomplete="name"
+                   {% if errors.get('contact_name') %}aria-invalid="true" aria-describedby="contact_name-error"{% endif %} required>
+            {% if errors.get('contact_name') %}<p class="field-error" id="contact_name-error">{{ errors.get('contact_name') }}</p>{% endif %}
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field {% if errors.get('email') %}field--error{% endif %}">
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email" maxlength="120"
+                   value="{{ values.get('email', '') }}" autocomplete="email"
+                   {% if errors.get('email') %}aria-invalid="true" aria-describedby="email-error"{% endif %} required>
+            <p class="field-hint">This is the address you use to check the application status.</p>
+            {% if errors.get('email') %}<p class="field-error" id="email-error">{{ errors.get('email') }}</p>{% endif %}
+          </div>
+          <div class="field {% if errors.get('phone') %}field--error{% endif %}">
+            <label for="phone">Telephone <span class="optional">(optional)</span></label>
+            <input id="phone" name="phone" type="tel" maxlength="30"
+                   value="{{ values.get('phone', '') }}" autocomplete="tel"
+                   {% if errors.get('phone') %}aria-invalid="true" aria-describedby="phone-error"{% endif %}>
+            <p class="field-hint">Used only if we cannot reach you by email.</p>
+            {% if errors.get('phone') %}<p class="field-error" id="phone-error">{{ errors.get('phone') }}</p>{% endif %}
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Your stall</legend>
+        <div class="field {% if errors.get('category_id') %}field--error{% endif %}">
+          <label for="category_id">Category</label>
+          <select id="category_id" name="category_id" required
+                  {% if errors.get('category_id') %}aria-invalid="true" aria-describedby="category_id-error"{% endif %}>
+            <option value="">Choose a category</option>
+            {% for category in categories %}
+            <option value="{{ category.id }}" {% if values.get('category_id')|string == category.id|string %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+          </select>
+          {% if errors.get('category_id') %}<p class="field-error" id="category_id-error">{{ errors.get('category_id') }}</p>{% endif %}
+        </div>
+
+        <div class="field {% if errors.get('product_summary') %}field--error{% endif %}">
+          <label for="product_summary">What will you sell?</label>
+          <textarea id="product_summary" name="product_summary" rows="6" maxlength="700" required
+                    {% if errors.get('product_summary') %}aria-invalid="true" aria-describedby="product_summary-error"{% endif %}>{{ values.get('product_summary', '') }}</textarea>
+          <p class="field-hint">Between 40 and 700 characters. Mention preparation methods, allergens or workshop times where relevant.</p>
+          {% if errors.get('product_summary') %}<p class="field-error" id="product_summary-error">{{ errors.get('product_summary') }}</p>{% endif %}
+        </div>
+
+        <fieldset class="fieldset-inner {% if errors.get('stall_type') %}field--error{% endif %}">
+          <legend>Pitch type</legend>
+          {% for slug, label, hint in stall_types %}
+          <label class="choice">
+            <input type="radio" name="stall_type" value="{{ slug }}" {% if selected_stall == slug %}checked{% endif %} required>
+            <span><strong>{{ label }}</strong><em>{{ hint }}</em></span>
+          </label>
+          {% endfor %}
+          {% if errors.get('stall_type') %}<p class="field-error">{{ errors.get('stall_type') }}</p>{% endif %}
+        </fieldset>
+
+        <fieldset class="fieldset-inner {% if errors.get('preferred_days') %}field--error{% endif %}">
+          <legend>Weekends you want to trade</legend>
+          {% for slug, label in preferred_days %}
+          <label class="choice choice--inline">
+            <input type="checkbox" name="preferred_days" value="{{ slug }}" {% if slug in days %}checked{% endif %}>
+            <span>{{ label }}</span>
+          </label>
+          {% endfor %}
+          {% if errors.get('preferred_days') %}<p class="field-error">{{ errors.get('preferred_days') }}</p>{% endif %}
+        </fieldset>
+
+        <label class="choice choice--inline">
+          <input type="checkbox" name="power_required" value="yes" {% if values.get('power_required') %}checked{% endif %}>
+          <span>I need an electrical supply (13A socket)</span>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Declaration</legend>
+        <div class="field {% if errors.get('consent') %}field--error{% endif %}">
+          <label class="choice choice--inline">
+            <input type="checkbox" name="consent" id="consent" value="yes" {% if values.get('consent') %}checked{% endif %} required
+                   {% if errors.get('consent') %}aria-invalid="true" aria-describedby="consent-error"{% endif %}>
+            <span>I confirm the details are accurate and I consent to the market office storing and using them to assess this application, as explained in the <a href="/privacy">privacy notice</a>.</span>
+          </label>
+          {% if errors.get('consent') %}<p class="field-error" id="consent-error">{{ errors.get('consent') }}</p>{% endif %}
+          <p class="field-hint">Food traders will be asked for a food hygiene certificate and public liability insurance before a pitch is confirmed.</p>
+        </div>
+      </fieldset>
+
+      <div class="form-actions">
+        <button class="button button--primary" type="submit">Submit application</button>
+        <a class="button button--ghost" href="/traders">Back to the traders</a>
+      </div>
+    </form>
+  </div>
+
+  <aside class="aside-card">
+    <h2>Before you start</h2>
+    <ul class="list list--tight">
+      <li>A short description of what you sell.</li>
+      <li>The weekends you can trade.</li>
+      <li>Whether you need power or a larger pitch.</li>
+    </ul>
+    <h2>What happens next</h2>
+    <ol class="list list--tight">
+      <li>You receive a reference and confirmation on screen.</li>
+      <li>The market office reviews the application within ten working days.</li>
+      <li>Approved traders get a pitch offer, licence pack and invoice.</li>
+    </ol>
+    <p class="muted">Questions? Email <a href="mailto:{{ market.contact_email }}">{{ market.contact_email }}</a>.</p>
+  </aside>
+</section>
+{% endblock %}

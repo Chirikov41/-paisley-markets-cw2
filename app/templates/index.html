@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}{{ market.name }} {{ market.year }} - two winter weekends in Paisley{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="wrap hero-inner">
+    <p class="eyebrow">Fri 27 November - Sun 6 December {{ market.year }}</p>
+    <h1>Two weekends of makers, food and light in the heart of Paisley</h1>
+    <p class="lede">Sixty independent traders take over Abbey Close and the Town Hall square for two winter weekends, with a light switch-on, a choir stage and a grotto for younger visitors.</p>
+    <div class="hero-actions">
+      <a class="button button--primary" href="/apply">Apply for a pitch</a>
+      <a class="button button--ghost" href="/traders">Browse the traders</a>
+    </div>
+    <dl class="hero-facts">
+      <div><dt>Location</dt><dd>{{ market.location }}</dd></div>
+      <div><dt>Opening</dt><dd>Fri 12-20, Sat 10-20, Sun 10-18</dd></div>
+      <div><dt>Entry</dt><dd>Free, no ticket needed</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="section wrap">
+  <div class="section-head">
+    <h2>What is on</h2>
+    <p>Both weekends run the full trader village. Each one has its own programme.</p>
+  </div>
+  <div class="card-grid card-grid--three">
+    {% for weekend in market.weekends %}
+    <article class="card">
+      <p class="card-kicker">{{ weekend.label }}</p>
+      <h3>{{ weekend.dates }}</h3>
+      <p>{{ weekend.note }}</p>
+    </article>
+    {% endfor %}
+    <article class="card card--accent">
+      <p class="card-kicker">The village</p>
+      <h3>{{ stats.traders }} traders, {{ stats.categories }} categories</h3>
+      <p>Food, crafts, decorations and family workshops, all within a five minute walk of Paisley Gilmour Street station.</p>
+    </article>
+  </div>
+</section>
+
+{% if featured %}
+<section class="section section--tint">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Featured traders</h2>
+      <p>A few of the stalls already confirmed for {{ market.year }}.</p>
+    </div>
+    <div class="card-grid card-grid--three">
+      {% for trader in featured %}
+      <article class="trader-card">
+        <p class="badge">{{ trader.category_name }}</p>
+        <h3>{{ trader.name }}</h3>
+        <p>{{ trader.description }}</p>
+        <p class="trader-meta">{{ trader.pitch }}{% if trader.trading_days == 'both' %} &middot; both weekends{% else %} &middot; {{ day_labels.get(trader.trading_days, trader.trading_days) }}{% endif %}</p>
+      </article>
+      {% endfor %}
+    </div>
+    <p class="section-link"><a href="/traders">See every trader &rarr;</a></p>
+  </div>
+</section>
+{% endif %}
+
+<section class="section wrap">
+  <div class="section-head">
+    <h2>Trading with us</h2>
+    <p>Applications are reviewed by the market office. Pitches are allocated by category to keep the village balanced.</p>
+  </div>
+  <ol class="steps">
+    <li>
+      <h3>Prepare your details</h3>
+      <p>You will need a contact name, the category that fits your stall and a short description of what you sell.</p>
+    </li>
+    <li>
+      <h3>Submit the application</h3>
+      <p>It takes about five minutes. You receive a reference such as PCM-{{ market.year }}-0007 straight away.</p>
+    </li>
+    <li>
+      <h3>Office review</h3>
+      <p>Applications are checked within ten working days for category fit, food safety paperwork and power requirements.</p>
+    </li>
+    <li>
+      <h3>Offer and confirmation</h3>
+      <p>Approved traders receive a pitch offer, a licence pack and an invoice for the pitch fee.</p>
+    </li>
+  </ol>
+  <p class="section-link"><a class="button button--primary" href="/apply">Start an application</a></p>
+</section>
+
+<section class="band">
+  <div class="wrap band-inner">
+    <div>
+      <h2>Already applied?</h2>
+      <p>Use your reference and the email address on the application to see where it has reached.</p>
+    </div>
+    <a class="button button--light" href="/status">Check application status</a>
+  </div>
+</section>
+{% endblock %}

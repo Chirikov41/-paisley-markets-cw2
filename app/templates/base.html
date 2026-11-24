@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ market.name }} {{ market.year }}{% endblock %}</title>
+  <meta name="description" content="{{ market.tagline }}">
+  <link rel="stylesheet" href="{{ url_for('static', path='css/site.css') }}">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230f3d2e'/%3E%3Cpath d='M16 6l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z' fill='%23c9a227'/%3E%3C/svg%3E">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/">
+        <span class="brand-mark" aria-hidden="true">&#10022;</span>
+        <span class="brand-text">Paisley<strong>Christmas Markets</strong></span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/" {% if request.url.path == '/' %}class="is-active" aria-current="page"{% endif %}>Home</a>
+        <a href="/traders" {% if request.url.path.startswith('/traders') %}class="is-active" aria-current="page"{% endif %}>Traders</a>
+        <a href="/visit" {% if request.url.path == '/visit' %}class="is-active" aria-current="page"{% endif %}>Plan a visit</a>
+        <a href="/apply" {% if request.url.path.startswith('/apply') %}class="is-active" aria-current="page"{% endif %}>Apply for a pitch</a>
+        <a href="/status" {% if request.url.path == '/status' %}class="is-active" aria-current="page"{% endif %}>Check status</a>
+        <a class="nav-office" href="{{ '/admin' if admin else '/admin/login' }}">Market office</a>
+      </nav>
+    </div>
+  </header>
+
+  {% if flashes %}
+  <div class="wrap flash-stack">
+    {% for item in flashes %}
+    <p class="flash flash--{{ item.kind }}">{{ item.message }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div>
+        <p class="footer-title">{{ market.name }} {{ market.year }}</p>
+        <p>{{ market.location }}<br>{{ market.address }}</p>
+      </div>
+      <div>
+        <p class="footer-title">Market office</p>
+        <p><a href="mailto:{{ market.contact_email }}">{{ market.contact_email }}</a><br>{{ market.contact_phone }}</p>
+      </div>
+      <div>
+        <p class="footer-title">Information</p>
+        <p><a href="/privacy">Privacy notice</a><br><a href="/visit">Access and travel</a><br><a href="/status">Trader application status</a></p>
+      </div>
+    </div>
+    <div class="wrap footer-base">
+      <p>Proof of concept built for COMP10020 Internet Technologies, University of the West of Scotland. The market and its traders are fictional.</p>
+    </div>
+  </footer>
+</body>
+</html>

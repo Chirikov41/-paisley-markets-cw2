@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Plan a visit - {{ market.name }}{% endblock %}
+
+{% block content %}
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Plan a visit</p>
+    <h1>Everything you need for the day</h1>
+    <p class="lede">{{ market.location }}, {{ market.address }}. Free entry, and the whole village is step-free.</p>
+  </div>
+</section>
+
+<section class="section wrap split">
+  <div>
+    <h2>Opening hours</h2>
+    <table class="table">
+      <caption>Opening hours for both weekends</caption>
+      <thead>
+        <tr><th scope="col">Day</th><th scope="col">Open</th></tr>
+      </thead>
+      <tbody>
+        {% for day, hours in market.opening_hours %}
+        <tr><th scope="row">{{ day }}</th><td>{{ hours }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="muted">The bar marquee closes thirty minutes after the village. Last entry to the grotto is one hour before closing.</p>
+
+    <h2>Getting here</h2>
+    <ul class="list">
+      <li><strong>Train:</strong> Paisley Gilmour Street is a six minute walk to Abbey Close.</li>
+      <li><strong>Bus:</strong> services along Gauze Street stop at Paisley Town Hall.</li>
+      <li><strong>Car:</strong> the Anchor Mills and Lagoon car parks are a ten minute walk. There is no parking on Abbey Close during the market.</li>
+      <li><strong>Accessible parking:</strong> four bays on Cotton Street, booked through the market office.</li>
+    </ul>
+  </div>
+  <aside class="aside-card">
+    <h2>Good to know</h2>
+    <ul class="list list--tight">
+      <li>Well behaved dogs are welcome in the outdoor village.</li>
+      <li>Card payments are accepted by most traders; the site has two cash machines.</li>
+      <li> Quiet hour is Sunday 10:00 to 11:00, with the stage sound turned down.</li>
+      <li>Lost property is held at the market office in the Town Hall.</li>
+    </ul>
+    <p><a href="mailto:{{ market.contact_email }}">{{ market.contact_email }}</a><br>{{ market.contact_phone }}</p>
+  </aside>
+</section>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Application received - {{ market.name }}{% endblock %}
+
+{% block content %}
+<section class="page-head page-head--success">
+  <div class="wrap">
+    {% if application %}
+    <p class="eyebrow">Application received</p>
+    <h1>Thank you, {{ application.contact_name }}</h1>
+    <p class="lede">Your application for <strong>{{ application.business_name }}</strong> is with the market office.</p>
+    <p class="reference">Reference <strong>{{ application.reference }}</strong></p>
+    {% else %}
+    <p class="eyebrow">Application</p>
+    <h1>We could not find that reference</h1>
+    <p class="lede">Check the link in your browser or use the status page with your reference and email address.</p>
+    {% endif %}
+  </div>
+</section>
+
+{% if application %}
+<section class="section wrap split">
+  <div>
+    <h2>What happens next</h2>
+    <ol class="steps steps--compact">
+      <li><h3>Email confirmation</h3><p>A copy of this reference is sent to {{ application.email }}.</p></li>
+      <li><h3>Office review</h3><p>We check category fit, paperwork and power needs within ten working days.</p></li>
+      <li><h3>Offer</h3><p>Approved traders receive a pitch offer, licence pack and invoice for the pitch fee.</p></li>
+    </ol>
+    <p class="muted">Keep the reference. It is the fastest way to check progress.</p>
+  </div>
+  <aside class="aside-card">
+    <h2>Your application</h2>
+    <dl class="detail-list">
+      <div><dt>Reference</dt><dd>{{ application.reference }}</dd></div>
+      <div><dt>Status</dt><dd><span class="status status--{{ application.status }}">{{ status_labels.get(application.status, application.status) }}</span></dd></div>
+      <div><dt>Weekends</dt><dd>{% for day in application.preferred_days.split(',') %}{{ day_labels.get(day, day) }}{% if not loop.last %}, {% endif %}{% endfor %}</dd></div>
+      <div><dt>Pitch type</dt><dd>{{ application.stall_type|capitalize }}</dd></div>
+      <div><dt>Power required</dt><dd>{{ 'Yes' if application.power_required else 'No' }}</dd></div>
+    </dl>
+    <p><a class="button button--primary button--wide" href="/status">Check this application later</a></p>
+  </aside>
+</section>
+{% else %}
+<section class="section wrap">
+  <p><a class="button button--primary" href="/status">Check an application status</a></p>
+</section>
+{% endif %}
+{% endblock %}
