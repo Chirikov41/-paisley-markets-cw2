@@ -9,6 +9,10 @@ The market is fictional. The scenario: a software house is tendering to build a 
 a community group running *Paisley Christmas Markets*, and wants a generic pattern that
 can be reused for other seasonal events.
 
+The site specification submitted to Turnitin is deliberately **not** in this repository,
+so the written report does not match the public repository when it is checked for
+originality. It is held with the other submission files.
+
 ---
 
 ## What the site does
@@ -180,6 +184,25 @@ runs `uvicorn app.main:app`. On Render's free plan the filesystem is ephemeral, 
 SQLite file is recreated on each deploy; that is acceptable for a proof of concept.
 A paid instance with a persistent disk, or a managed PostgreSQL database, would be the
 next step (see the Hosting section of the specification).
+
+### Deploy on Render (about five minutes)
+
+1. Push this repository to GitHub and make it public.
+2. In Render choose **New → Blueprint**, point it at the repository and approve the
+   `render.yaml` it finds.
+3. Set `ADMIN_PASSWORD` in the service environment (keep the generated `SECRET_KEY`).
+4. Deploy, open the service URL, and sign in at `/admin/login`.
+5. Run `scripts/seed_demo.py` once if you want the dashboard populated.
+
+### Deploy on Fly.io (keeps the SQLite file on the free allowance)
+
+```bash
+fly launch --no-deploy
+fly volumes create market_data --size 1
+# mount market_data at /data and set DATABASE_PATH=/data/market.db
+fly secrets set SECRET_KEY=... ADMIN_PASSWORD=...
+fly deploy
+```
 
 To deploy manually on any platform that runs Python:
 
