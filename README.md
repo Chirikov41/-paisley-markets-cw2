@@ -91,6 +91,10 @@ To fill the office dashboard with realistic applications:
 .\.venv\Scripts\python.exe scripts\seed_demo.py
 ```
 
+On a hosted instance without a shell, set `SEED_DEMO=1` and the same six applications are
+created at boot. Seeding is skipped when applications already exist, so restarting the
+service does not duplicate them. The Render blueprint in this repository sets the flag.
+
 ---
 
 ## Tests

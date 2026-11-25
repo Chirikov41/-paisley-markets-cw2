@@ -11,5 +11,7 @@ services:
         generateValue: true
       - key: SESSION_HTTPS_ONLY
         value: "1"
+      - key: SEED_DEMO
+        value: "1"
       - key: PYTHON_VERSION
         value: "3.12.7"

@@ -107,6 +107,10 @@ def init_db() -> None:
     try:
         conn.executescript(SCHEMA_PATH.read_text(encoding="utf-8"))
         _seed(conn)
+        if os.getenv("SEED_DEMO", "").lower() in {"1", "true", "yes"}:
+            from .demo_data import seed_demo_applications
+
+            seed_demo_applications(conn)
         conn.commit()
     finally:
         conn.close()
