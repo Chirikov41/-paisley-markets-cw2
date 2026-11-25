@@ -13,5 +13,7 @@ services:
         value: "1"
       - key: SEED_DEMO
         value: "1"
+      - key: ADMIN_PASSWORD
+        sync: false
       - key: PYTHON_VERSION
         value: "3.12.7"
