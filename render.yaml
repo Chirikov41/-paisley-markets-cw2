@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: paisley-christmas-markets
+    name: paisley-markets-cw2-b01857660
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
