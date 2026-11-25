@@ -9,6 +9,8 @@ The market is fictional. The scenario: a software house is tendering to build a 
 a community group running *Paisley Christmas Markets*, and wants a generic pattern that
 can be reused for other seasonal events.
 
+**Live demo:** <https://paisley-markets-cw2-b01857660.onrender.com>
+
 The site specification submitted to Turnitin is deliberately **not** in this repository,
 so the written report does not match the public repository when it is checked for
 originality. It is held with the other submission files.
